@@ -24,13 +24,15 @@ public class SwitchButton extends Component {
     private float location;
     private boolean selected;
     private boolean mouseOver;
-    private float speed = 1f;
+    private float speed = 0.10f;
 
     public SwitchButton() {
         setBackground(new Color(0, 174, 255));
         setPreferredSize(new Dimension(50, 25));
         setForeground(Color.white);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        location =2;
 
         timer = new Timer(0, new ActionListener() {
             @Override
