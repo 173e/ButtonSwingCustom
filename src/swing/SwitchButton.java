@@ -1,5 +1,6 @@
 package swing;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -31,8 +32,8 @@ public class SwitchButton extends Component {
         setPreferredSize(new Dimension(50, 25));
         setForeground(Color.white);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        location =2;
+
+        location = 2;
 
         timer = new Timer(0, new ActionListener() {
             @Override
@@ -40,7 +41,6 @@ public class SwitchButton extends Component {
 
                 if (selected) {
                     int endLocation = getWidth() - getHeight() + 2;
-                    System.out.println(endLocation);
                     if (location < endLocation) {
                         location += speed;
                         repaint();
@@ -48,7 +48,6 @@ public class SwitchButton extends Component {
 
                         timer.stop();
                         location = endLocation;
-                        System.out.println("posicion ctual No.1: " + location);
                         repaint();
                     }
                 } else {
@@ -59,7 +58,6 @@ public class SwitchButton extends Component {
                     } else {
                         timer.stop();
                         location = endLocation;
-                        System.out.println("posicion ctual No.2: " + location);
                         repaint();
                     }
 
@@ -67,30 +65,29 @@ public class SwitchButton extends Component {
 
             }
         });
-        
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                mouseOver= false;
+                mouseOver = false;
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                mouseOver= true;
+                mouseOver = true;
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (mouseOver) {
-                        selected=!selected;
+                        selected = !selected;
                         timer.start();
                     }
-                    
+
                 }
             }
-            
-            
+
         });
 
     }
@@ -101,13 +98,36 @@ public class SwitchButton extends Component {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int width = getWidth();
         int height = getHeight();
-
+        
+        float alpha = getAlpha();
+        if (alpha<1) {
+            g2.setColor(Color.gray);
+            g2.fillRoundRect(0, 0, width, height, 25, 25);
+        }
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, width, height, 25, 25);
+        g2.setComposite(AlphaComposite.SrcOver);
+        
         g2.setColor(getForeground());
-        g2.fillOval((int)location, 2, height - 4, height - 4);
+        g2.fillOval((int) location, 2, height - 4, height - 4);
 
         super.paint(g);
+    }
+
+    public float getAlpha() {
+        float width = getWidth() - getHeight();
+        float alpha = (location - 2) / width;
+        System.out.println("El valor de la variable alPha es:" + alpha);
+        
+        if (alpha<0) {
+            alpha=0;
+        }if (alpha>1) {
+            alpha=1;
+        }
+
+        return alpha;
+
     }
 
 }
